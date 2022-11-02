@@ -1,4 +1,4 @@
-package com.hotels.lastcancunhotel.dtos;
+package com.hotels.lastcancunhotel.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,11 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class RoomDTO {
-	private int id;
-	private String propertyId;
-	private String token;
+public class AmenityEntity {
+	
+	private String content;
+	
 }
