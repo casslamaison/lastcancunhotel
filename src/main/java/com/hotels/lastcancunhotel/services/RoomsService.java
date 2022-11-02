@@ -18,25 +18,35 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class RoomsService {
 
-	RoomsRepository roomsRepository;
-	
-	ModelMapper modelMapper;
+	private RoomsRepository roomsRepository;
+//	private BookingService bookingService;
+	private ModelMapper modelMapper;
 	
 	public RoomsService(RoomsRepository roomsRepository, ModelMapper modelMapper) {
 		this.roomsRepository = roomsRepository;
+//		this.bookingService = bookingService;
 		this.modelMapper = modelMapper;
+	}
+	
+	public RoomEntity findRoomEntityById(String id) {
+		return roomsRepository.findById(id)
+				.orElseThrow();
 	}
 	
 	public List<RoomDTO> getAvailableRooms(RoomRequestDTO request) {
 		log.info("getAvailableRooms - Input '{}'", request);
 		
 		List<RoomEntity> roomEntities = roomsRepository.findAll();
+		
+//		bookService.getRoomAvailability(request);
+		
 		List<RoomDTO> rooms = roomEntities.stream()
 			.map(entity -> modelMapper.map(entity, RoomDTO.class))
 			.collect(Collectors.toList());
 		
 		log.info("getAvailableRooms - Output '{}'", rooms);
 		return rooms;
+		
 	}
 	
 	public AddRoomRequestDTO addRoom(AddRoomRequestDTO request) {
@@ -51,4 +61,7 @@ public class RoomsService {
 		return room;
 	}
 	
+	public void deleteRoom(String id) {
+		roomsRepository.deleteById(id);
+	}
 }
