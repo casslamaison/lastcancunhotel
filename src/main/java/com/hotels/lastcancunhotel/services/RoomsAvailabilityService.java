@@ -35,8 +35,9 @@ public class RoomsAvailabilityService {
 		List<RoomEntity> roomEntities = roomsRepository.findAll();
 		
 		List<BookEntity> bookedRooms = bookingService.getBookedRooms(request.getCheckIn(), request.getCheckOut());
-		if(bookedRooms.isEmpty()) {
-			log.info("Não deixa bookar {}", bookedRooms);
+		
+		if(!bookedRooms.isEmpty()) {
+			log.info("Cannot book {}", bookedRooms);
 			return Collections.emptyList();
 		}
 		

@@ -1,5 +1,6 @@
 package com.hotels.lastcancunhotel.services;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +39,12 @@ public class BookingService {
 	}
 	
 	public List<BookEntity> getBookedRooms(Date checkIn, Date checkOut) {
-		return bookRepository.findAll();
+		Date checkinn = Date.from(checkIn.toInstant().minus(Duration.ofDays(1)));
+		return bookRepository.checkAvailableBookings(checkinn, checkOut);
+	}
+	
+	public void removeBooking(String id) {
+		bookRepository.deleteById(id);
 	}
 	
 	public List<BookingResponseDTO> getAllBookings(){

@@ -42,9 +42,7 @@ public class RoomsController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteRoom(@PathVariable String id) {
-		
 		roomsService.deleteRoom(id);
-		
 		return ResponseEntity.noContent().build();
 	}
 }
