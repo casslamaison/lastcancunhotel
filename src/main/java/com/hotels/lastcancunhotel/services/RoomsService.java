@@ -28,46 +28,42 @@ public class RoomsService {
 	}
 	
 	public RoomEntity findRoomEntityById(String id) {
+		log.info("findRoomEntityById - input [{}]", id);
 		return roomsRepository.findById(id)
 				.orElseThrow();
 	}
 	
 	public List<RoomDTO> listRooms(){
+		log.info("listRooms");
 		return roomsRepository.findAll().stream()
 				.map(entity -> modelMapper.map(entity, RoomDTO.class))
 				.collect(Collectors.toList());
 	}
 	
 	public List<RoomDTO> getAvailableRooms(RoomRequestDTO request) {
-		log.info("getAvailableRooms - Input '{}'", request);
+		log.info("getAvailableRooms - input [{}]", request);
 		
 		List<RoomEntity> roomEntities = roomsRepository.findAll();
 		
-		List<RoomDTO> rooms = roomEntities.stream()
-			.map(entity -> modelMapper.map(entity, RoomDTO.class))
-			.collect(Collectors.toList());
-		
-		log.info("getAvailableRooms - Output '{}'", rooms);
-		return rooms;
+		return roomEntities.stream()
+				.map(entity -> modelMapper.map(entity, RoomDTO.class))
+				.collect(Collectors.toList());
 		
 	}
 	
 	public AddRoomRequestDTO addRoom(AddRoomRequestDTO request) {
-		log.info("addRoom - Input '{}'", request);
+		log.info("addRoom - input [{}]", request);
 		
-		AddRoomRequestDTO room = modelMapper.map(
-			roomsRepository.insert(modelMapper.map(request.toBuilder()
-				.id(UUID.randomUUID().toString())
-				.build(), RoomEntity.class)), 
-			AddRoomRequestDTO.class
-		);
-		
-		log.info("addRoom - Output '{}'", room);
-		return room;
+		return modelMapper.map(
+				roomsRepository.insert(modelMapper.map(request.toBuilder()
+						.id(UUID.randomUUID().toString())
+						.build(), RoomEntity.class)), 
+					AddRoomRequestDTO.class
+				);
 	}
 	
 	public void deleteRoom(String id) {
-		log.info("Deleting room '{}'", id);
+		log.info("deleteRoom - input [{}]", id);
 		roomsRepository.deleteById(id);
 	}
 }

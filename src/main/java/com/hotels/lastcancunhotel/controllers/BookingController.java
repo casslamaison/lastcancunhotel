@@ -1,5 +1,7 @@
 package com.hotels.lastcancunhotel.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +27,12 @@ public class BookingController {
 	}
 	
 	@PostMapping
-	public BookEntity bookRoom(@RequestBody BookingRequestDTO request) {
+	public BookEntity bookRoom(@RequestBody @Valid BookingRequestDTO request) {
 		return bookingService.bookRoom(request);
 	}
 	
 	@PutMapping("/{id}")
-	public BookEntity changeBooking (@PathVariable String id, @RequestBody BookingRequestDTO request) {
+	public BookEntity changeBooking (@PathVariable String id, @RequestBody @Valid BookingRequestDTO request) {
 		return bookingService.modifyBooking(request.toBuilder().id(id).build());
 	}
 	

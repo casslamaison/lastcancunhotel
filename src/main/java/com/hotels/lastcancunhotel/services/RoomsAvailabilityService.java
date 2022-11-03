@@ -29,7 +29,7 @@ public class RoomsAvailabilityService {
 	private ModelMapper modelMapper;
 	
 	public List<RoomDTO> listAvailableRooms(RoomRequestDTO request) {
-		log.info("getAvailableRooms - Input '{}'", request);
+		log.info("listAvailableRooms - input [{}]", request);
 		
 		List<RoomEntity> roomEntities = roomsRepository.findAll();
 		

@@ -2,7 +2,6 @@ package com.hotels.lastcancunhotel.dtos;
 
 import java.util.Date;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Valid
 @Builder
 public class RoomRequestDTO {
 

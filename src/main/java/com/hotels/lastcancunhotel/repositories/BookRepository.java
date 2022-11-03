@@ -13,6 +13,6 @@ import com.hotels.lastcancunhotel.entities.BookEntity;
 public interface BookRepository extends MongoRepository<BookEntity, String>{
 
 	@Query("{checkout : {$gt : ?0}, checkin: {$lt : ?1}}")
-	public List<BookEntity> findBookingsByCheckinAndCheckout(Date checkin, Date checkout);
+	public List<BookEntity> findBookingsByCheckinAndCheckout(Date checkIn, Date checkOut);
 	
 }

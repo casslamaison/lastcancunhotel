@@ -1,9 +1,11 @@
 package com.hotels.lastcancunhotel.services;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,16 +32,18 @@ public class BookingService {
 	}
 	
 	public List<BookEntity> getBookedRoomsWithinRange(Date checkIn, Date checkOut) {
+		log.info("getBookedRoomsWithinRange - input [{}, {}]", checkIn, checkOut);
 		Date checkinn = Date.from(checkIn.toInstant().minus(Duration.ofDays(1)));
 		return bookRepository.findBookingsByCheckinAndCheckout(checkinn, checkOut);
 	}
 	
 	public void cancelBooking(String id) {
-		log.info("Canceling booking '{}'", id);
+		log.info("cancelBooking - input [{}]", id);
 		bookRepository.deleteById(id);
 	}
 	
 	public List<BookingResponseDTO> listBookings(){
+		log.info("listBookings");
 		return bookRepository.findAll().stream()
 				.map(entity -> BookingResponseDTO.builder()
 						.id(entity.getId())
@@ -52,7 +56,9 @@ public class BookingService {
 	}
 	
 	public BookEntity bookRoom(BookingRequestDTO request) {
+		log.info("bookRoom - input [{}]", request);
 		checkIfBookingExists(request);
+		validateBusinessRules(request.getCheckIn(), request.getCheckOut());
 		
 		RoomEntity roomEntity = roomsService.findRoomEntityById(request.getRoomId());
 		
@@ -65,6 +71,8 @@ public class BookingService {
 	}
 	
 	public BookEntity modifyBooking(BookingRequestDTO request) {
+		log.info("modifyBooking - input [{}]", request);
+		validateBusinessRules(request.getCheckIn(), request.getCheckOut());
 		
 		this.getBookedRoomsWithinRange(request.getCheckIn(), request.getCheckOut()).stream()
 				.filter(entity -> !entity.getId().equals(request.getId()))
@@ -85,9 +93,24 @@ public class BookingService {
 				.findAny().map(handleExistingBooking());
 	}
 	
+	private void validateBusinessRules(Date checkIn, Date checkout) {
+		BiPredicate<Date, Date> dateShouldBeBiggerThan =  
+				(firstDate, secondDate) -> firstDate.compareTo(secondDate) < 0;
+				
+		BiPredicate<Date, Date> differenceShouldNotBeBiggerThen =  
+				(firstDate, secondDate) -> Duration.between(firstDate.toInstant(), secondDate.toInstant()).toDays() < 3;
+		
+		BiPredicate<Date, Date> dateInAdvance = (firstDate, secondDate) -> Duration.between(new Date().toInstant()	, firstDate.toInstant()).toDays() < 30;
+		
+		if(!Arrays.asList(dateShouldBeBiggerThan, differenceShouldNotBeBiggerThen, dateInAdvance).stream()
+				.allMatch(biPredicate -> biPredicate.test(checkIn, checkout))) {
+			throw new RuntimeException("The stay period should not be longer than 3 days and it cannot be reserved for more than 30 days in advance.");
+		}
+	}
+	
 	private Function<BookEntity, Object> handleExistingBooking() {
 		return item -> {
-			throw new RuntimeException("Booking unavailable for this period."); 
+			throw new RuntimeException("Room unavailable for this period."); 
 		};
 	}
 	
