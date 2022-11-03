@@ -34,14 +34,14 @@ public class RoomsAvailabilityService {
 		List<RoomEntity> roomEntities = roomsRepository.findAll();
 		
 		List<RoomEntity> bookedRooms = bookingService.getBookedRoomsWithinRange(request.getCheckIn(), request.getCheckOut())
-				.stream().map(BookEntity::getRoom)
-				.collect(Collectors.toList());
+			.stream().map(BookEntity::getRoom)
+			.collect(Collectors.toList());
 		
 		return roomEntities.stream()
-				.filter(entity -> !bookedRooms.contains(entity))
-				.map(item -> item)
-				.map(entity -> modelMapper.map(entity, RoomDTO.class))
-				.collect(Collectors.toList());
+			.filter(entity -> !bookedRooms.contains(entity))
+			.map(item -> item)
+			.map(entity -> modelMapper.map(entity, RoomDTO.class))
+			.collect(Collectors.toList());
 	}
 
 }

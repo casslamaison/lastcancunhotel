@@ -39,7 +39,7 @@ public class BookingController {
 	@GetMapping
 	public ResponseEntity<Object> getAllBookings(){
 		return ResponseEntity.ok()
-				.body(bookingService.listBookings());
+			.body(bookingService.listBookings());
 	}
 	
 	@DeleteMapping("/{id}")

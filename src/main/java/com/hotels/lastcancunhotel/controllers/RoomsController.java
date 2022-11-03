@@ -31,19 +31,19 @@ public class RoomsController {
 	@GetMapping
 	public ResponseEntity<Object> listRooms() {
 		return ResponseEntity.ok()
-				.body(roomsService.listRooms());
+			.body(roomsService.listRooms());
 	}
 	
 	@GetMapping("/available")
 	public ResponseEntity<Object> listAvailableRooms(@Valid RoomRequestDTO request) {
 		return ResponseEntity.ok()
-				.body(roomsAvailabilityService.listAvailableRooms(request));
+			.body(roomsAvailabilityService.listAvailableRooms(request));
 	}
 	
 	@PostMapping
 	public ResponseEntity<Object> addRoom(@RequestBody AddRoomRequestDTO request) {
 		return ResponseEntity.ok()
-				.body(roomsService.addRoom(request));
+			.body(roomsService.addRoom(request));
 	}
 	
 	@DeleteMapping("/{id}")

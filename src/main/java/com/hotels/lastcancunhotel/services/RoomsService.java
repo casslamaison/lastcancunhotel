@@ -29,15 +29,14 @@ public class RoomsService {
 	
 	public RoomEntity findRoomEntityById(String id) {
 		log.info("findRoomEntityById - input [{}]", id);
-		return roomsRepository.findById(id)
-				.orElseThrow();
+		return roomsRepository.findById(id).orElseThrow();
 	}
 	
 	public List<RoomDTO> listRooms(){
 		log.info("listRooms");
 		return roomsRepository.findAll().stream()
-				.map(entity -> modelMapper.map(entity, RoomDTO.class))
-				.collect(Collectors.toList());
+			.map(entity -> modelMapper.map(entity, RoomDTO.class))
+			.collect(Collectors.toList());
 	}
 	
 	public List<RoomDTO> getAvailableRooms(RoomRequestDTO request) {
@@ -46,8 +45,8 @@ public class RoomsService {
 		List<RoomEntity> roomEntities = roomsRepository.findAll();
 		
 		return roomEntities.stream()
-				.map(entity -> modelMapper.map(entity, RoomDTO.class))
-				.collect(Collectors.toList());
+			.map(entity -> modelMapper.map(entity, RoomDTO.class))
+			.collect(Collectors.toList());
 		
 	}
 	
@@ -55,11 +54,11 @@ public class RoomsService {
 		log.info("addRoom - input [{}]", request);
 		
 		return modelMapper.map(
-				roomsRepository.insert(modelMapper.map(request.toBuilder()
-						.id(UUID.randomUUID().toString())
-						.build(), RoomEntity.class)), 
-					AddRoomRequestDTO.class
-				);
+			roomsRepository.insert(modelMapper.map(request.toBuilder()
+				.id(UUID.randomUUID().toString())
+				.build(), RoomEntity.class)), 
+			AddRoomRequestDTO.class
+		);
 	}
 	
 	public void deleteRoom(String id) {

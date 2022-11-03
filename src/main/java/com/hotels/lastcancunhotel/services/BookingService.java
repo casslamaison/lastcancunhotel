@@ -45,14 +45,14 @@ public class BookingService {
 	public List<BookingResponseDTO> listBookings(){
 		log.info("listBookings");
 		return bookRepository.findAll().stream()
-				.map(entity -> BookingResponseDTO.builder()
-						.id(entity.getId())
-						.checkIn(entity.getCheckin())
-						.checkOut(entity.getCheckout())
-						.roomId(entity.getRoom().getId())
-						.roomName(entity.getRoom().getName())
-						.build())
-				.collect(Collectors.toList());
+			.map(entity -> BookingResponseDTO.builder()
+				.id(entity.getId())
+				.checkIn(entity.getCheckin())
+				.checkOut(entity.getCheckout())
+				.roomId(entity.getRoom().getId())
+				.roomName(entity.getRoom().getName())
+				.build())
+			.collect(Collectors.toList());
 	}
 	
 	public BookEntity bookRoom(BookingRequestDTO request) {
@@ -63,11 +63,11 @@ public class BookingService {
 		RoomEntity roomEntity = roomsService.findRoomEntityById(request.getRoomId());
 		
 		return bookRepository.insert(BookEntity.builder()
-				.id(UUID.randomUUID().toString())
-				.checkin(request.getCheckIn())
-				.checkout(request.getCheckOut())
-				.room(roomEntity)
-				.build());
+			.id(UUID.randomUUID().toString())
+			.checkin(request.getCheckIn())
+			.checkout(request.getCheckOut())
+			.room(roomEntity)
+			.build());
 	}
 	
 	public BookEntity modifyBooking(BookingRequestDTO request) {
@@ -75,36 +75,36 @@ public class BookingService {
 		validateBusinessRules(request.getCheckIn(), request.getCheckOut());
 		
 		this.getBookedRoomsWithinRange(request.getCheckIn(), request.getCheckOut()).stream()
-				.filter(entity -> !entity.getId().equals(request.getId()))
-				.findAny().map(handleExistingBooking());
+			.filter(entity -> !entity.getId().equals(request.getId()))
+			.findAny().map(handleExistingBooking());
 		
 		BookEntity modifyBooking = this.bookRepository.findById(request.getId()).orElseThrow()
-				.toBuilder()
-				.checkin(request.getCheckIn())
-				.checkout(request.getCheckOut())
-				.build();
+			.toBuilder()
+			.checkin(request.getCheckIn())
+			.checkout(request.getCheckOut())
+			.build();
 		
 		return bookRepository.save(modifyBooking);
 	}
 
 	private void checkIfBookingExists(BookingRequestDTO request) {
 		this.getBookedRoomsWithinRange(request.getCheckIn(), request.getCheckOut()).stream()
-				.filter(entity -> entity.getRoom().getId().equals(request.getRoomId()))
-				.findAny().map(handleExistingBooking());
+			.filter(entity -> entity.getRoom().getId().equals(request.getRoomId()))
+			.findAny().map(handleExistingBooking());
 	}
 	
 	private void validateBusinessRules(Date checkIn, Date checkout) {
 		BiPredicate<Date, Date> dateShouldBeBiggerThan =  
-				(firstDate, secondDate) -> firstDate.compareTo(secondDate) < 0;
+			(firstDate, secondDate) -> firstDate.compareTo(secondDate) < 0;
 				
 		BiPredicate<Date, Date> differenceShouldNotBeBiggerThen =  
-				(firstDate, secondDate) -> Duration.between(firstDate.toInstant(), secondDate.toInstant()).toDays() < 3;
+			(firstDate, secondDate) -> Duration.between(firstDate.toInstant(), secondDate.toInstant()).toDays() < 3;
 		
 		BiPredicate<Date, Date> dateInAdvance = (firstDate, secondDate) -> Duration.between(new Date().toInstant()	, firstDate.toInstant()).toDays() < 30;
 		
 		if(!Arrays.asList(dateShouldBeBiggerThan, differenceShouldNotBeBiggerThen, dateInAdvance).stream()
-				.allMatch(biPredicate -> biPredicate.test(checkIn, checkout))) {
-			throw new RuntimeException("The stay period should not be longer than 3 days and it cannot be reserved for more than 30 days in advance.");
+			.allMatch(biPredicate -> biPredicate.test(checkIn, checkout))) {
+				throw new RuntimeException("The stay period should not be longer than 3 days and it cannot be reserved for more than 30 days in advance.");
 		}
 	}
 	
