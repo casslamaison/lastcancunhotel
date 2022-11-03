@@ -1,6 +1,5 @@
 package com.hotels.lastcancunhotel.services;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,24 +28,20 @@ public class RoomsAvailabilityService {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public List<RoomDTO> getAvailableRooms(RoomRequestDTO request) {
+	public List<RoomDTO> listAvailableRooms(RoomRequestDTO request) {
 		log.info("getAvailableRooms - Input '{}'", request);
 		
 		List<RoomEntity> roomEntities = roomsRepository.findAll();
 		
-		List<BookEntity> bookedRooms = bookingService.getBookedRooms(request.getCheckIn(), request.getCheckOut());
+		List<RoomEntity> bookedRooms = bookingService.getBookedRoomsWithinRange(request.getCheckIn(), request.getCheckOut())
+				.stream().map(BookEntity::getRoom)
+				.collect(Collectors.toList());
 		
-		if(!bookedRooms.isEmpty()) {
-			log.info("Cannot book {}", bookedRooms);
-			return Collections.emptyList();
-		}
-		
-		List<RoomDTO> rooms = roomEntities.stream()
-			.map(entity -> modelMapper.map(entity, RoomDTO.class))
-			.collect(Collectors.toList());
-		
-		log.info("getAvailableRooms - Output '{}'", rooms);
-		return rooms;
+		return roomEntities.stream()
+				.filter(entity -> !bookedRooms.contains(entity))
+				.map(item -> item)
+				.map(entity -> modelMapper.map(entity, RoomDTO.class))
+				.collect(Collectors.toList());
 	}
-	
+
 }

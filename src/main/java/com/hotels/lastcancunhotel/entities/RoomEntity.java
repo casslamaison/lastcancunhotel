@@ -21,7 +21,7 @@ public class RoomEntity {
 	private String id;
 	String name;
 	String description;
-	List<AmenityEntity> amenities;
+	List<String> amenities;
 	String location;
 	
 }

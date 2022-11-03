@@ -2,11 +2,15 @@ package com.hotels.lastcancunhotel.dtos;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class AddRoomRequestDTO {
 	String id;
 	String name;

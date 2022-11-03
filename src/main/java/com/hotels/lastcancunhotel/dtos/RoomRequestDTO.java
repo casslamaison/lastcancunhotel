@@ -8,10 +8,12 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.Builder;
 import lombok.Data;
 
-@Valid
 @Data
+@Valid
+@Builder
 public class RoomRequestDTO {
 
 	private final String DATE_FORMAT = "yyyy-MM-dd";

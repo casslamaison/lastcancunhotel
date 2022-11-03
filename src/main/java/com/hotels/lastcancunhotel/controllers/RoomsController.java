@@ -28,10 +28,16 @@ public class RoomsController {
 		this.roomsAvailabilityService = roomsAvailabilityService;
 	}
 	
-	@GetMapping("/availability")
-	public ResponseEntity<Object> getAvailability(@Valid RoomRequestDTO request) {
+	@GetMapping
+	public ResponseEntity<Object> listRooms() {
 		return ResponseEntity.ok()
-				.body(roomsAvailabilityService.getAvailableRooms(request));
+				.body(roomsService.listRooms());
+	}
+	
+	@GetMapping("/available")
+	public ResponseEntity<Object> listAvailableRooms(@Valid RoomRequestDTO request) {
+		return ResponseEntity.ok()
+				.body(roomsAvailabilityService.listAvailableRooms(request));
 	}
 	
 	@PostMapping
