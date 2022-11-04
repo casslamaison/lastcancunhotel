@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.hotels.lastcancunhotel.dtos.AddRoomRequestDTO;
 import com.hotels.lastcancunhotel.dtos.RoomDTO;
-import com.hotels.lastcancunhotel.dtos.RoomRequestDTO;
 import com.hotels.lastcancunhotel.entities.RoomEntity;
 import com.hotels.lastcancunhotel.repositories.RoomsRepository;
 
@@ -37,17 +36,6 @@ public class RoomsService {
 		return roomsRepository.findAll().stream()
 			.map(entity -> modelMapper.map(entity, RoomDTO.class))
 			.collect(Collectors.toList());
-	}
-	
-	public List<RoomDTO> getAvailableRooms(RoomRequestDTO request) {
-		log.info("getAvailableRooms - input [{}]", request);
-		
-		List<RoomEntity> roomEntities = roomsRepository.findAll();
-		
-		return roomEntities.stream()
-			.map(entity -> modelMapper.map(entity, RoomDTO.class))
-			.collect(Collectors.toList());
-		
 	}
 	
 	public AddRoomRequestDTO addRoom(AddRoomRequestDTO request) {

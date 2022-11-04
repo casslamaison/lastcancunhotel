@@ -27,12 +27,16 @@ import com.hotels.lastcancunhotel.dtos.BookingResponseDTO;
 import com.hotels.lastcancunhotel.entities.BookEntity;
 import com.hotels.lastcancunhotel.entities.RoomEntity;
 import com.hotels.lastcancunhotel.repositories.BookRepository;
+import com.mongodb.client.MongoClient;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
 
 	@InjectMocks
 	BookingService bookingService;
+	
+	@Mock 
+	MongoClient mongoDbFactory;   
 	
 	@Mock
 	private BookRepository bookRepository;
@@ -166,11 +170,6 @@ public class BookingServiceTest {
 		
 		when(bookRepository.save(Mockito.any()))
 			.thenReturn(BookEntity.builder().build());
-		
-		BookingRequestDTO request = BookingRequestDTO.builder()
-				.checkIn(checkIn)
-				.checkOut(checkOut)
-				.build();
 		
 		BookEntity modifiedBooking = bookingService.modifyBooking(defaultBookingRequestFromPeriod(checkIn, checkOut));
 		
