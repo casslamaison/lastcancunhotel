@@ -8,11 +8,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@Builder(toBuilder = true)
 @NoArgsConstructor
-@Builder(toBuilder=true)
-public class RoomDTO {
-	private String id;
+@AllArgsConstructor
+public class AddRoomRequestDTO {
+	String id;
 	String name;
 	String description;
 	List<String> amenities;
