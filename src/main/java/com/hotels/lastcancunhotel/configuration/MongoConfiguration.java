@@ -34,10 +34,10 @@ public class MongoConfiguration {
         return strings -> {
         	roomsRepository.save(RoomEntity.builder()
         			.id("1da48796-d3a6-432a-a3df-ee43c31cb37d")
-        			.name("Quarto duplo")
-        			.description("Quarto duplo master com chuveiro")
-        			.amenities(Arrays.asList("Ar condicionado", "Fogão", "Gás"))
-        			.location("Rua chimarrão 43")
+        			.name("King size bed - Standard")
+        			.description("King size bed, single bed, bathroom")
+        			.amenities(Arrays.asList("Parking", "King size bed", "Breakfast"))
+        			.location("9-13 Clapham Rd, London Sw9 0jd, UK")
         			.build());
         };
     }
