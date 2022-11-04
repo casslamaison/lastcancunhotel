@@ -1,15 +1,19 @@
-# lastcancunhotel
+## Requirements
+- Docker
+- Java Runtime Enviroment
+- Maven
 
-Requirements
-Docker to run mongodb
-Java Home path set
-Deploy instructions
+## Deploy instructions
+- Run the ```docker-compose up``` command in order to start the MongoDB Server
+- Run the ```mvn clean install``` command to start up the application
 
-Hotel API
+# Hotel API
 
-# Room Availability
+## Room Availability
 ### Should return all available rooms to book, given the input parameters
-
+Parameters
+- checkIn - Must be a date in the future using the given format, cannot be a date more than 30 days in advance
+- checkIn - Must be a date in the future using the given format, cannot be greater than 3 days comparing to the checkIn parameter
 Request
 GET 
 path.to/v1/rooms/available?checkIn=**{yyyy-MM-dd}**&checkOut=**{yyyy-MM-dd}**
@@ -28,7 +32,7 @@ Response
     }
 ]
 ```
-# New Booking
+## New Booking
 ### Book a stay using the roomId(from the Room Availability endpoint), checkIn and checkOut parameters
 POST
 path.to/v1/booking
@@ -59,7 +63,7 @@ Response
     }
 }
 ```
-# Modify Booking
+## Modify Booking
 ### Modify an existing booking a stay using the bookingId(generated in the New booking endpoint), checkIn and checkOut parameters
 POST
 path.to/v1/booking/**{bookingId}**
