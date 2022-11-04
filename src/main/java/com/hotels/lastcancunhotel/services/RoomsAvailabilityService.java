@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotels.lastcancunhotel.dtos.RoomDTO;
@@ -19,14 +18,17 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class RoomsAvailabilityService {
 
-	@Autowired
 	private RoomsRepository roomsRepository;
 	
-	@Autowired
 	private BookingService bookingService;
 	
-	@Autowired
 	private ModelMapper modelMapper;
+	
+	public RoomsAvailabilityService(RoomsRepository roomsRepository, BookingService bookingService, ModelMapper modelMapper) {
+		this.roomsRepository = roomsRepository;
+		this.bookingService = bookingService;
+		this.modelMapper = modelMapper;
+	}
 	
 	public List<RoomDTO> listAvailableRooms(RoomRequestDTO request) {
 		log.info("listAvailableRooms - input [{}]", request);
@@ -39,7 +41,6 @@ public class RoomsAvailabilityService {
 		
 		return roomEntities.stream()
 			.filter(entity -> !bookedRooms.contains(entity))
-			.map(item -> item)
 			.map(entity -> modelMapper.map(entity, RoomDTO.class))
 			.collect(Collectors.toList());
 	}
