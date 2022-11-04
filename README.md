@@ -4,8 +4,8 @@
 - Maven
 
 ## Deploy instructions
-- Run the ```docker-compose up``` command in order to start the MongoDB Server
-- Run the ```mvn clean install``` command to start up the application
+- Run the ```docker-compose up``` command in order to start the MongoDB Server.
+- Run the ```./mvnw spring-boot:run``` command to start up the application.
 
 # Hotel API
 
@@ -13,13 +13,13 @@
 ### Should return all available rooms to book, given the input parameters
 
 Request
-GET ```path.to/v1/rooms/available?checkIn={yyyy-MM-dd}&checkOut={yyyy-MM-dd}```
+GET ```localhost:8080/v1/rooms/available?checkIn={yyyy-MM-dd}&checkOut={yyyy-MM-dd}```
 
 #### Query Parameters
 - checkIn - Must be a date in the future using the given format, cannot be a date more than 30 days in advance
 - checkIn - Must be a date in the future using the given format, cannot be greater than 3 days comparing to the checkIn parameter
 
-Response
+Response ```200 OK```
 ```
 [
     {
@@ -35,8 +35,7 @@ Response
 ```
 ## New Booking
 ### Book a stay using the roomId(from the Room Availability endpoint), checkIn and checkOut parameters
-POST
-path.to/v1/booking
+POST ```localhost:8080/v1/booking```
 
 Request Body
 ```
@@ -47,7 +46,7 @@ Request Body
 }
 ```
 
-Response
+Response ```201 CREATED```
 ```
 {
     "id": {id},
@@ -65,9 +64,8 @@ Response
 }
 ```
 ## Modify Booking
-### Modify an existing booking a stay using the bookingId(generated in the New booking endpoint), checkIn and checkOut parameters
-POST
-path.to/v1/booking/**{bookingId}**
+### Modify an existing booking a stay using the booking id(generated in the New booking endpoint), checkIn and checkOut parameters
+POST ```localhost:8080/v1/booking/{id}```
 
 Request Body
 ```
@@ -77,7 +75,7 @@ Request Body
 }
 ```
 
-Response
+Response ```200 OK```
 ```
 {
     "id": {id},
@@ -94,3 +92,9 @@ Response
     }
 }
 ```
+
+## Cancel Booking
+### Cancel existing booking using the booking id(generated in the New booking endpoint)
+POST ```localhost:8080/v1/booking/{id}```
+
+Response ```204 NO_CONTENT```
