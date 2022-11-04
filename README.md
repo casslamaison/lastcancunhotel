@@ -11,12 +11,13 @@
 
 ## Room Availability
 ### Should return all available rooms to book, given the input parameters
-Parameters
+
+Request
+GET ```path.to/v1/rooms/available?checkIn={yyyy-MM-dd}&checkOut={yyyy-MM-dd}```
+
+#### Query Parameters
 - checkIn - Must be a date in the future using the given format, cannot be a date more than 30 days in advance
 - checkIn - Must be a date in the future using the given format, cannot be greater than 3 days comparing to the checkIn parameter
-Request
-GET 
-path.to/v1/rooms/available?checkIn=**{yyyy-MM-dd}**&checkOut=**{yyyy-MM-dd}**
 
 Response
 ```
