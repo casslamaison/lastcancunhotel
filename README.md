@@ -18,15 +18,13 @@ Response
 ```
 [
     {
-        "id": "1da48796-d3a6-432a-a3df-ee43c31cb37d",
-        "name": "Quarto duplo",
-        "description": "Quarto duplo master com chuveiro",
+        "id": {id},
+        "name": {name},
+        "description": {description},
         "amenities": [
-            "Ar condicionado",
-            "Fogão",
-            "Gás"
+            {amenities}
         ],
-        "location": "Rua chimarrão 43"
+        "location": {location}
     }
 ]
 ```
