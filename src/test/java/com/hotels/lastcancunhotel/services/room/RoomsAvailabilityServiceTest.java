@@ -1,4 +1,4 @@
-package com.hotels.lastcancunhotel.services;
+package com.hotels.lastcancunhotel.services.room;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,6 +22,7 @@ import com.hotels.lastcancunhotel.dtos.RoomDTO;
 import com.hotels.lastcancunhotel.dtos.RoomRequestDTO;
 import com.hotels.lastcancunhotel.entities.RoomEntity;
 import com.hotels.lastcancunhotel.repositories.RoomsRepository;
+import com.hotels.lastcancunhotel.services.booking.Booking;
 import com.mongodb.client.MongoClient;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +35,7 @@ public class RoomsAvailabilityServiceTest {
 	RoomsRepository roomsRepository;
 	
 	@Mock
-	BookingService bookingService;
+	Booking bookingService;
 	
 	@Mock
     private ModelMapper mapper;
@@ -50,7 +51,7 @@ public class RoomsAvailabilityServiceTest {
 		when(roomsRepository.findAll())
 				.thenReturn(Collections.emptyList());
 		
-		List<RoomDTO> availableRooms = roomsAvailabilityService.listAvailableRooms(request);
+		List<RoomDTO> availableRooms = roomsAvailabilityService.listAvailable(request);
 		
 		assertThat(availableRooms).isEmpty();
 	}
@@ -65,7 +66,7 @@ public class RoomsAvailabilityServiceTest {
 		when(mapper.map(Mockito.any(), Mockito.any()))
 				.thenReturn(RoomDTO.builder().build());
 		
-		List<RoomDTO> availableRooms = roomsAvailabilityService.listAvailableRooms(request);
+		List<RoomDTO> availableRooms = roomsAvailabilityService.listAvailable(request);
 		
 		assertThat(availableRooms).isNotEmpty();
 	}
@@ -74,11 +75,11 @@ public class RoomsAvailabilityServiceTest {
 	public void shouldThrowExceptionWhenTryingToFetchAvailableRooms() throws ParseException {
 		RoomRequestDTO request = RoomRequestDTO.builder().build();
 		
-		when(bookingService.getBookedRoomsWithinRange(Mockito.any(), Mockito.any()))
+		when(bookingService.listWithinRange(Mockito.any(), Mockito.any()))
 				.thenThrow(new RuntimeException(ERROR_MESSAGE));
 		
 		Exception exception = assertThrows(RuntimeException.class, () -> {
-			roomsAvailabilityService.listAvailableRooms(request);
+			roomsAvailabilityService.listAvailable(request);
 	    });
 
 	    assertTrue(exception.getMessage().contains(ERROR_MESSAGE));

@@ -1,4 +1,4 @@
-package com.hotels.lastcancunhotel.services;
+package com.hotels.lastcancunhotel.services.room;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class RoomsService {
+public class RoomsService implements Room {
 
 	private RoomsRepository roomsRepository;
 	private ModelMapper modelMapper;
@@ -26,19 +26,19 @@ public class RoomsService {
 		this.modelMapper = modelMapper;
 	}
 	
-	public RoomEntity findRoomEntityById(String id) {
+	public RoomEntity findById(String id) {
 		log.info("findRoomEntityById - input [{}]", id);
 		return roomsRepository.findById(id).orElseThrow();
 	}
 	
-	public List<RoomDTO> listRooms(){
+	public List<RoomDTO> listAll(){
 		log.info("listRooms");
 		return roomsRepository.findAll().stream()
 			.map(entity -> modelMapper.map(entity, RoomDTO.class))
 			.collect(Collectors.toList());
 	}
 	
-	public AddRoomRequestDTO addRoom(AddRoomRequestDTO request) {
+	public AddRoomRequestDTO add(AddRoomRequestDTO request) {
 		log.info("addRoom - input [{}]", request);
 		
 		return modelMapper.map(
@@ -49,8 +49,9 @@ public class RoomsService {
 		);
 	}
 	
-	public void deleteRoom(String id) {
+	public void delete(String id) {
 		log.info("deleteRoom - input [{}]", id);
 		roomsRepository.deleteById(id);
 	}
+	
 }

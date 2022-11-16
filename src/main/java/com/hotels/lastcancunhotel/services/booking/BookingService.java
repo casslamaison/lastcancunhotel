@@ -1,4 +1,4 @@
-package com.hotels.lastcancunhotel.services;
+package com.hotels.lastcancunhotel.services.booking;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -16,33 +16,34 @@ import com.hotels.lastcancunhotel.dtos.BookingResponseDTO;
 import com.hotels.lastcancunhotel.entities.BookEntity;
 import com.hotels.lastcancunhotel.entities.RoomEntity;
 import com.hotels.lastcancunhotel.repositories.BookRepository;
+import com.hotels.lastcancunhotel.services.room.Room;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class BookingService {
+class BookingService implements Booking {
 
 	private BookRepository bookRepository;
-	private RoomsService roomsService;
+	private Room roomsService;
 	
-	public BookingService (BookRepository bookRepository, RoomsService roomsService) {
+	public BookingService (BookRepository bookRepository, Room roomsService) {
 		this.bookRepository = bookRepository;
 		this.roomsService = roomsService;
 	}
 	
-	public List<BookEntity> getBookedRoomsWithinRange(Date checkIn, Date checkOut) {
+	public List<BookEntity> listWithinRange(Date checkIn, Date checkOut) {
 		log.info("getBookedRoomsWithinRange - input [{}, {}]", checkIn, checkOut);
 		Date checkinn = Date.from(checkIn.toInstant().minus(Duration.ofDays(1)));
 		return bookRepository.findBookingsByCheckinAndCheckout(checkinn, checkOut);
 	}
 	
-	public void cancelBooking(String id) {
+	public void cancel(String id) {
 		log.info("cancelBooking - input [{}]", id);
 		bookRepository.deleteById(id);
 	}
 	
-	public List<BookingResponseDTO> listBookings(){
+	public List<BookingResponseDTO> list(){
 		log.info("listBookings");
 		return bookRepository.findAll().stream()
 			.map(entity -> BookingResponseDTO.builder()
@@ -55,12 +56,12 @@ public class BookingService {
 			.collect(Collectors.toList());
 	}
 	
-	public BookEntity bookRoom(BookingRequestDTO request) {
+	public BookEntity book(BookingRequestDTO request) {
 		log.info("bookRoom - input [{}]", request);
 		checkIfBookingExists(request);
 		validateBusinessRules(request.getCheckIn(), request.getCheckOut());
 		
-		RoomEntity roomEntity = roomsService.findRoomEntityById(request.getRoomId());
+		RoomEntity roomEntity = roomsService.findById(request.getRoomId());
 		
 		return bookRepository.insert(BookEntity.builder()
 			.id(UUID.randomUUID().toString())
@@ -70,11 +71,11 @@ public class BookingService {
 			.build());
 	}
 	
-	public BookEntity modifyBooking(BookingRequestDTO request) {
+	public BookEntity modify(BookingRequestDTO request) {
 		log.info("modifyBooking - input [{}]", request);
 		validateBusinessRules(request.getCheckIn(), request.getCheckOut());
 		
-		this.getBookedRoomsWithinRange(request.getCheckIn(), request.getCheckOut()).stream()
+		this.listWithinRange(request.getCheckIn(), request.getCheckOut()).stream()
 			.filter(entity -> !entity.getId().equals(request.getId()))
 			.findAny().map(handleExistingBooking());
 		
@@ -88,7 +89,7 @@ public class BookingService {
 	}
 
 	private void checkIfBookingExists(BookingRequestDTO request) {
-		this.getBookedRoomsWithinRange(request.getCheckIn(), request.getCheckOut()).stream()
+		this.listWithinRange(request.getCheckIn(), request.getCheckOut()).stream()
 			.filter(entity -> entity.getRoom().getId().equals(request.getRoomId()))
 			.findAny().map(handleExistingBooking());
 	}
@@ -113,5 +114,5 @@ public class BookingService {
 			throw new RuntimeException("Room unavailable for this period."); 
 		};
 	}
-	
+
 }
