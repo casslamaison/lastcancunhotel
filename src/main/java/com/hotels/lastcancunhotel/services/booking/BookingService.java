@@ -119,7 +119,7 @@ class BookingService implements Booking {
 		BiPredicate<Date, Date> differenceShouldNotBeBiggerThen =  
 			(firstDate, secondDate) -> Duration.between(firstDate.toInstant(), secondDate.toInstant()).toDays() < 3;
 		
-		BiPredicate<Date, Date> dateInAdvance = (firstDate, secondDate) -> Duration.between(new Date().toInstant()	, firstDate.toInstant()).toDays() < 30;
+		BiPredicate<Date, Date> dateInAdvance = (firstDate, secondDate) -> Duration.between(new Date().toInstant(), firstDate.toInstant()).toDays() < 30;
 		
 		if(!Arrays.asList(dateShouldBeBiggerThan, differenceShouldNotBeBiggerThen, dateInAdvance).stream()
 			.allMatch(biPredicate -> biPredicate.test(checkIn, checkout))) {
