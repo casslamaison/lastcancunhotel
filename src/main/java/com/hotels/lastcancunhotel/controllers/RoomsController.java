@@ -13,42 +13,40 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hotels.lastcancunhotel.dtos.AddRoomRequestDTO;
 import com.hotels.lastcancunhotel.dtos.RoomRequestDTO;
-import com.hotels.lastcancunhotel.services.RoomsAvailabilityService;
-import com.hotels.lastcancunhotel.services.RoomsService;
+import com.hotels.lastcancunhotel.services.booking.Booking;
+import com.hotels.lastcancunhotel.services.room.Room;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("v1/rooms")
 public class RoomsController {
 
-	RoomsService roomsService;
-	RoomsAvailabilityService roomsAvailabilityService;
-	
-	public RoomsController(RoomsService roomsService, RoomsAvailabilityService roomsAvailabilityService) {
-		this.roomsService = roomsService;
-		this.roomsAvailabilityService = roomsAvailabilityService;
-	}
+	private final Room roomsService;
+	private final Booking bookingService;
 	
 	@GetMapping
 	public ResponseEntity<Object> listRooms() {
 		return ResponseEntity.ok()
-			.body(roomsService.listRooms());
+			.body(roomsService.listAll());
 	}
 	
 	@GetMapping("/available")
 	public ResponseEntity<Object> listAvailableRooms(@Valid RoomRequestDTO request) {
 		return ResponseEntity.ok()
-			.body(roomsAvailabilityService.listAvailableRooms(request));
+			.body(bookingService.listAvailable(request));
 	}
 	
 	@PostMapping
 	public ResponseEntity<Object> addRoom(@RequestBody AddRoomRequestDTO request) {
 		return ResponseEntity.ok()
-			.body(roomsService.addRoom(request));
+			.body(roomsService.add(request));
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteRoom(@PathVariable String id) {
-		roomsService.deleteRoom(id);
+		roomsService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 }

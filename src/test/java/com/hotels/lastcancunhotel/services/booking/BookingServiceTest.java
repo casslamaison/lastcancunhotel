@@ -1,4 +1,4 @@
-package com.hotels.lastcancunhotel.services;
+package com.hotels.lastcancunhotel.services.booking;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +26,7 @@ import com.hotels.lastcancunhotel.dtos.BookingResponseDTO;
 import com.hotels.lastcancunhotel.entities.BookEntity;
 import com.hotels.lastcancunhotel.entities.RoomEntity;
 import com.hotels.lastcancunhotel.repositories.BookRepository;
+import com.hotels.lastcancunhotel.services.room.Room;
 import com.mongodb.client.MongoClient;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,9 +42,8 @@ public class BookingServiceTest {
 	private BookRepository bookRepository;
 	
 	@Mock
-	private RoomsService roomService;
+	private Room roomService;
 	
-	private static final String ERROR_MESSAGE = "Cannot invoke";
 	private static final String BOOK_ERROR_MESSAGE = "cannot be reserved";
 	
 	private Date createDateFrom(int plusDays) {
@@ -59,38 +58,9 @@ public class BookingServiceTest {
 	}
 	
 	@Test
-	public void shouldReturnBookedRooms() {
-		when(bookRepository.findBookingsByCheckinAndCheckout(Mockito.any(), Mockito.any()))
-			.thenReturn(Arrays.asList(BookEntity.builder().build()));
-		
-		List<BookEntity> bookedRooms = bookingService.getBookedRoomsWithinRange(new Date(), new Date());
-		
-		assertThat(bookedRooms).isNotEmpty();
-	}
-	
-	@Test
-	public void shouldNotReturnBookedRooms() {
-		when(bookRepository.findBookingsByCheckinAndCheckout(Mockito.any(), Mockito.any()))
-			.thenReturn(Collections.emptyList());
-		
-		List<BookEntity> bookedRooms = bookingService.getBookedRoomsWithinRange(new Date(), new Date());
-		
-		assertThat(bookedRooms).isEmpty();
-	}
-	
-	@Test
-	public void shouldThrowErrorTryingToReturnBookedRooms() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			bookingService.getBookedRoomsWithinRange(null, null);
-	    });
-
-	    assertTrue(exception.getMessage().contains(ERROR_MESSAGE));
-	}
-	
-	@Test
 	public void shouldCancelBooking() {
 		String bookingId = "EMPTY";
-		bookingService.cancelBooking(bookingId);
+		bookingService.cancel(bookingId);
 		verify(bookRepository, times(1)).deleteById(bookingId);
 	}
 	
@@ -101,7 +71,7 @@ public class BookingServiceTest {
 					.room(RoomEntity.builder().build())
 					.build()));
 		
-		List<BookingResponseDTO> bookings = bookingService.listBookings();
+		List<BookingResponseDTO> bookings = bookingService.list();
 		
 		assertThat(bookings).isNotEmpty();
 	}
@@ -119,7 +89,7 @@ public class BookingServiceTest {
 				.checkOut(checkOut)
 				.build();
 		
-		BookEntity s = bookingService.bookRoom(request);
+		BookEntity s = bookingService.book(request);
 		
 		assertThat(s).isNotNull();
 	}
@@ -130,7 +100,7 @@ public class BookingServiceTest {
 		Date checkOut = createDateFrom(15);
 		
 		Exception exception = assertThrows(RuntimeException.class, () -> {
-			bookingService.bookRoom(defaultBookingRequestFromPeriod(checkIn, checkOut));
+			bookingService.book(defaultBookingRequestFromPeriod(checkIn, checkOut));
 	    });
 		
 		assertTrue(exception.getMessage().contains(BOOK_ERROR_MESSAGE));
@@ -142,7 +112,7 @@ public class BookingServiceTest {
 		Date checkOut = createDateFrom(32);
 		
 		Exception exception = assertThrows(RuntimeException.class, () -> {
-			bookingService.bookRoom(defaultBookingRequestFromPeriod(checkIn, checkOut));
+			bookingService.book(defaultBookingRequestFromPeriod(checkIn, checkOut));
 	    });
 		
 		assertTrue(exception.getMessage().contains(BOOK_ERROR_MESSAGE));
@@ -154,7 +124,7 @@ public class BookingServiceTest {
 		Date checkOut = createDateFrom(1);
 		
 		Exception exception = assertThrows(RuntimeException.class, () -> {
-			bookingService.bookRoom(defaultBookingRequestFromPeriod(checkIn, checkOut));
+			bookingService.book(defaultBookingRequestFromPeriod(checkIn, checkOut));
 	    });
 		
 		assertTrue(exception.getMessage().contains(BOOK_ERROR_MESSAGE));
@@ -171,7 +141,7 @@ public class BookingServiceTest {
 		when(bookRepository.save(Mockito.any()))
 			.thenReturn(BookEntity.builder().build());
 		
-		BookEntity modifiedBooking = bookingService.modifyBooking(defaultBookingRequestFromPeriod(checkIn, checkOut));
+		BookEntity modifiedBooking = bookingService.modify(defaultBookingRequestFromPeriod(checkIn, checkOut));
 		
 		assertThat(modifiedBooking).isNotNull();
 	}

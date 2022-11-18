@@ -1,4 +1,4 @@
-package com.hotels.lastcancunhotel.services;
+package com.hotels.lastcancunhotel.services.room;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,7 +31,7 @@ public class RoomsServiceTest {
 		when(roomsRepository.findById(id))
 			.thenReturn(Optional.of(RoomEntity.builder().id(id).build()));
 		
-		RoomEntity room = roomsService.findRoomEntityById(id);
+		RoomEntity room = roomsService.findById(id);
 		
 		assertThat(room.getId()).isNotEmpty();
 	}
@@ -42,7 +42,7 @@ public class RoomsServiceTest {
 			.thenThrow(RuntimeException.class);
 	
 		Exception exception = assertThrows(RuntimeException.class, ()-> {
-			roomsService.findRoomEntityById("");
+			roomsService.findById("");
 	    });
 
 	    assertThat(exception.getClass()).isEqualTo(RuntimeException.class);
