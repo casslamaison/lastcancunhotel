@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RoomsService implements Room {
+class RoomsService implements Room {
 
 	private final RoomsRepository roomsRepository;
 	private final ModelMapper modelMapper;

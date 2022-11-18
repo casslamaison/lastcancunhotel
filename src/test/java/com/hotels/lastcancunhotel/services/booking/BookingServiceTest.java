@@ -26,7 +26,7 @@ import com.hotels.lastcancunhotel.dtos.BookingResponseDTO;
 import com.hotels.lastcancunhotel.entities.BookEntity;
 import com.hotels.lastcancunhotel.entities.RoomEntity;
 import com.hotels.lastcancunhotel.repositories.BookRepository;
-import com.hotels.lastcancunhotel.services.room.RoomsService;
+import com.hotels.lastcancunhotel.services.room.Room;
 import com.mongodb.client.MongoClient;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,7 +42,7 @@ public class BookingServiceTest {
 	private BookRepository bookRepository;
 	
 	@Mock
-	private RoomsService roomService;
+	private Room roomService;
 	
 	private static final String BOOK_ERROR_MESSAGE = "cannot be reserved";
 	
