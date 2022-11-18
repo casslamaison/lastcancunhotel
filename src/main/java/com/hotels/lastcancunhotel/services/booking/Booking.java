@@ -1,15 +1,16 @@
 package com.hotels.lastcancunhotel.services.booking;
 
-import java.util.Date;
 import java.util.List;
 
 import com.hotels.lastcancunhotel.dtos.BookingRequestDTO;
 import com.hotels.lastcancunhotel.dtos.BookingResponseDTO;
+import com.hotels.lastcancunhotel.dtos.RoomDTO;
+import com.hotels.lastcancunhotel.dtos.RoomRequestDTO;
 import com.hotels.lastcancunhotel.entities.BookEntity;
 
 public  interface Booking {
 
-	public List<BookEntity> listWithinRange(Date checkIn, Date checkOut);
+	public List<RoomDTO> listAvailable(RoomRequestDTO request);
 	
 	public void cancel(String id);
 	

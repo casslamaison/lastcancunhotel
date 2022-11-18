@@ -13,20 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hotels.lastcancunhotel.dtos.AddRoomRequestDTO;
 import com.hotels.lastcancunhotel.dtos.RoomRequestDTO;
+import com.hotels.lastcancunhotel.services.booking.Booking;
 import com.hotels.lastcancunhotel.services.room.Room;
-import com.hotels.lastcancunhotel.services.room.RoomAvailability;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("v1/rooms")
 public class RoomsController {
 
-	Room roomsService;
-	RoomAvailability roomsAvailabilityService;
-	
-	public RoomsController(Room roomsService, RoomAvailability roomsAvailabilityService) {
-		this.roomsService = roomsService;
-		this.roomsAvailabilityService = roomsAvailabilityService;
-	}
+	private final Room roomsService;
+	private final Booking bookingService;
 	
 	@GetMapping
 	public ResponseEntity<Object> listRooms() {
@@ -37,7 +35,7 @@ public class RoomsController {
 	@GetMapping("/available")
 	public ResponseEntity<Object> listAvailableRooms(@Valid RoomRequestDTO request) {
 		return ResponseEntity.ok()
-			.body(roomsAvailabilityService.listAvailable(request));
+			.body(bookingService.listAvailable(request));
 	}
 	
 	@PostMapping

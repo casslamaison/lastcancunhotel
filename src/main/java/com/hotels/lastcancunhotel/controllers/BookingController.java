@@ -17,15 +17,14 @@ import com.hotels.lastcancunhotel.dtos.BookingRequestDTO;
 import com.hotels.lastcancunhotel.entities.BookEntity;
 import com.hotels.lastcancunhotel.services.booking.Booking;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("v1/booking")
 public class BookingController {
 
-	private Booking bookingService;
-	
-	public BookingController(Booking bookingService) {
-		this.bookingService = bookingService;
-	}
+	private final Booking bookingService;
 	
 	@PostMapping
 	public ResponseEntity<Object> bookRoom(@RequestBody @Valid BookingRequestDTO request) {

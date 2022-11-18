@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +44,6 @@ public class BookingServiceTest {
 	@Mock
 	private RoomsService roomService;
 	
-	private static final String ERROR_MESSAGE = "Cannot invoke";
 	private static final String BOOK_ERROR_MESSAGE = "cannot be reserved";
 	
 	private Date createDateFrom(int plusDays) {
@@ -57,35 +55,6 @@ public class BookingServiceTest {
 				.checkIn(checkIn)
 				.checkOut(checkOut)
 				.build();
-	}
-	
-	@Test
-	public void shouldReturnBookedRooms() {
-		when(bookRepository.findBookingsByCheckinAndCheckout(Mockito.any(), Mockito.any()))
-			.thenReturn(Arrays.asList(BookEntity.builder().build()));
-		
-		List<BookEntity> bookedRooms = bookingService.listWithinRange(new Date(), new Date());
-		
-		assertThat(bookedRooms).isNotEmpty();
-	}
-	
-	@Test
-	public void shouldNotReturnBookedRooms() {
-		when(bookRepository.findBookingsByCheckinAndCheckout(Mockito.any(), Mockito.any()))
-			.thenReturn(Collections.emptyList());
-		
-		List<BookEntity> bookedRooms = bookingService.listWithinRange(new Date(), new Date());
-		
-		assertThat(bookedRooms).isEmpty();
-	}
-	
-	@Test
-	public void shouldThrowErrorTryingToReturnBookedRooms() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			bookingService.listWithinRange(null, null);
-	    });
-
-	    assertTrue(exception.getMessage().contains(ERROR_MESSAGE));
 	}
 	
 	@Test

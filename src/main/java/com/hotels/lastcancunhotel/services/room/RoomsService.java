@@ -12,19 +12,16 @@ import com.hotels.lastcancunhotel.dtos.RoomDTO;
 import com.hotels.lastcancunhotel.entities.RoomEntity;
 import com.hotels.lastcancunhotel.repositories.RoomsRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RoomsService implements Room {
 
-	private RoomsRepository roomsRepository;
-	private ModelMapper modelMapper;
-	
-	public RoomsService(RoomsRepository roomsRepository, ModelMapper modelMapper) {
-		this.roomsRepository = roomsRepository;
-		this.modelMapper = modelMapper;
-	}
+	private final RoomsRepository roomsRepository;
+	private final ModelMapper modelMapper;
 	
 	public RoomEntity findById(String id) {
 		log.info("findRoomEntityById - input [{}]", id);

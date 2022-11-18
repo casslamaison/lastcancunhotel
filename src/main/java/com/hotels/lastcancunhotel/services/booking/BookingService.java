@@ -9,34 +9,31 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.hotels.lastcancunhotel.dtos.BookingRequestDTO;
 import com.hotels.lastcancunhotel.dtos.BookingResponseDTO;
+import com.hotels.lastcancunhotel.dtos.RoomDTO;
+import com.hotels.lastcancunhotel.dtos.RoomRequestDTO;
 import com.hotels.lastcancunhotel.entities.BookEntity;
 import com.hotels.lastcancunhotel.entities.RoomEntity;
 import com.hotels.lastcancunhotel.repositories.BookRepository;
+import com.hotels.lastcancunhotel.repositories.RoomsRepository;
 import com.hotels.lastcancunhotel.services.room.Room;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 class BookingService implements Booking {
 
-	private BookRepository bookRepository;
-	private Room roomsService;
-	
-	public BookingService (BookRepository bookRepository, Room roomsService) {
-		this.bookRepository = bookRepository;
-		this.roomsService = roomsService;
-	}
-	
-	public List<BookEntity> listWithinRange(Date checkIn, Date checkOut) {
-		log.info("getBookedRoomsWithinRange - input [{}, {}]", checkIn, checkOut);
-		Date checkinn = Date.from(checkIn.toInstant().minus(Duration.ofDays(1)));
-		return bookRepository.findBookingsByCheckinAndCheckout(checkinn, checkOut);
-	}
+	private final Room roomsService;
+	private final RoomsRepository roomsRepository;
+	private final BookRepository bookRepository;
+	private final ModelMapper modelMapper;
 	
 	public void cancel(String id) {
 		log.info("cancelBooking - input [{}]", id);
@@ -88,6 +85,27 @@ class BookingService implements Booking {
 		return bookRepository.save(modifyBooking);
 	}
 
+	public List<RoomDTO> listAvailable(RoomRequestDTO request) {
+		log.info("listAvailableRooms - input [{}]", request);
+
+		List<RoomEntity> roomEntities = roomsRepository.findAll();
+		
+		List<RoomEntity> bookedRooms = this.listWithinRange(request.getCheckIn(), request.getCheckOut())
+			.stream().map(BookEntity::getRoom)
+			.collect(Collectors.toList());
+		
+		return roomEntities.stream()
+			.filter(entity -> !bookedRooms.contains(entity))
+			.map(entity -> modelMapper.map(entity, RoomDTO.class))
+			.collect(Collectors.toList());
+	}
+	
+	private List<BookEntity> listWithinRange(Date checkIn, Date checkOut) {
+		log.info("getBookedRoomsWithinRange - input [{}, {}]", checkIn, checkOut);
+		Date checkinn = Date.from(checkIn.toInstant().minus(Duration.ofDays(1)));
+		return bookRepository.findBookingsByCheckinAndCheckout(checkinn, checkOut);
+	}
+	
 	private void checkIfBookingExists(BookingRequestDTO request) {
 		this.listWithinRange(request.getCheckIn(), request.getCheckOut()).stream()
 			.filter(entity -> entity.getRoom().getId().equals(request.getRoomId()))
